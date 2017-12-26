@@ -1,4 +1,5 @@
 var axios = require('axios');
+var net = require('net');
 var xml2js = require('xml2js');
 var Service, Characteristic;
 
@@ -29,13 +30,13 @@ FNIPDimmer.prototype.getPowerState = function(callback) {
   var self = this;
   var parseString = require('xml2js').parseString;
   var url = 'http://' + self.config.ipaddress + '/status.xml';
-  axios.get(url)
+  axios.get(url, {'timeout': 1000})
   .then(function (response) {
     parseString(response.data, function(err, result) {
       var find = 'result.response.level' + self.config.channel;
       var brightness = parseInt(eval(find));
       self.powerState = brightness > 0 ? true : false;
-      self.log.info('State is ' + self.powerState);
+      self.log.debug('State is ' + self.powerState);
       callback(null, self.powerState);
     })
   })
@@ -48,12 +49,12 @@ FNIPDimmer.prototype.getBrightness = function(callback) {
   var self = this;
   var parseString = require('xml2js').parseString;
   var url = 'http://' + self.config.ipaddress + '/status.xml';
-  axios.get(url)
+  axios.get(url, {'timeout': 1000})
   .then(function (response) {
     parseString(response.data, function(err, result) {
       var find = 'result.response.level' + self.config.channel;
       self.brightness = parseInt(eval(find));
-      self.log.info('Brightness is at ' + self.brightness);
+      self.log.debug('Brightness is at ' + self.brightness);
       callback(null, self.brightness);
     })
   })
@@ -64,12 +65,21 @@ FNIPDimmer.prototype.getBrightness = function(callback) {
 
 FNIPDimmer.prototype.setPowerState = function(on, callback) {
   var self = this;
-  const action = on ? 'on' : 'off';
-  if (action == 'off' || (action == 'on' && !self.powerState)) {
-    var url = 'http://' + self.config.ipaddress + '/action.cgi';
-    var data = 'action=' + action + '&output=' + self.config.channel;
-    axios.post(url, data);
-    self.log.info('Setting state to ' + on);
+  const action = on ? 'ON' : 'OFF';
+  if (action == 'OFF' || (action == 'ON' && !self.powerState)) {
+    var client = new net.Socket();
+    client.connect(self.config.port, self.config.ipaddress, function() {
+      client.setTimeout(1000);
+      client.write('FN,' + action + ',' + self.config.channel + "\r\n");
+    });
+    client.on('data', function(data) {
+      client.destroy(); // kill client after server's response
+    });
+    client.on('error', function (err) {
+      client.destroy();
+      self.log.error(err);
+    });
+    self.log.debug('Setting state to ' + on);
     self.powerState = on;
     callback(null);
   }
@@ -77,11 +87,20 @@ FNIPDimmer.prototype.setPowerState = function(on, callback) {
 
 FNIPDimmer.prototype.setBrightness = function(brightness, callback, context) {
   var self = this;
-  var url = 'http://' + self.config.ipaddress + '/action.cgi';
-  var data = 'action=lev&output=' + self.config.channel + '&val=' + brightness;
-  axios.post(url, data);
+  var client = new net.Socket();
+  client.connect(self.config.port, self.config.ipaddress, function() {
+    client.setTimeout(1000);
+    client.write('FN,LEV,' + self.config.channel + ',' + brightness + "\r\n");
+  });
+  client.on('data', function(data) {
+    client.destroy(); // kill client after server's response
+  });
+  client.on('error', function (err) {
+    client.destroy();
+    self.log.error(err);
+  });
   self.brightness = brightness;
-  self.log.info('Setting brightness to ' + brightness);
+  self.log.debug('Setting brightness to ' + brightness);
   callback(null);
 }
 
@@ -105,14 +124,14 @@ FNIPRelay.prototype.getPowerState = function(callback) {
   var self = this;
   var parseString = require('xml2js').parseString;
   var url = 'http://' + self.config.ipaddress + '/status.xml';
-  axios.get(url)
+  axios.get(url, {'timeout': 1000})
   .then(function (response) {
     parseString(response.data, function(err, result) {
       var channel = self.config.channel-1;
       var find = 'result.response.led' + channel;
       var state = parseInt(eval(find)) == 1 ? true : false;
       self.powerState = state;
-      self.log.info('State is ' + self.powerState);
+      self.log.debug('State is ' + self.powerState);
       callback(null, self.powerState);
     })
   })
@@ -123,12 +142,21 @@ FNIPRelay.prototype.getPowerState = function(callback) {
 
 FNIPRelay.prototype.setPowerState = function(on, callback) {
   var self = this;
-  const action = on ? 'on' : 'off';
-  if (action == 'off' || (action == 'on' && !self.powerState)) {
-    var url = 'http://' + self.config.ipaddress + '/action.cgi';
-    var data = 'action=' + action + '&output=' + self.config.channel;
-    axios.post(url, data);
-    self.log.info('Setting state to ' + on);
+  const action = on ? 'ON' : 'OFF';
+  if (action == 'OFF' || (action == 'ON' && !self.powerState)) {
+    var client = new net.Socket();
+    client.connect(self.config.port, self.config.ipaddress, function() {
+      client.setTimeout(1000);
+      client.write('FN,' + action + ',' + self.config.channel + "\r\n");
+    });
+    client.on('data', function(data) {
+      client.destroy(); // kill client after server's response
+    });
+    client.on('error', function (err) {
+      client.destroy();
+      self.log.error(err);
+    });
+    self.log.debug('Setting state to ' + on);
     self.powerState = on;
     callback(null);
   }
