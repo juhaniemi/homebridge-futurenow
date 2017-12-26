@@ -1,0 +1,97 @@
+{
+  "bridge": {
+    "name": "Homebridge",
+    "username": "AB:CD:EF:12:34:45",
+    "port": 12345,
+    "pin": "012-34-567"
+  },
+
+  "description": "Example config",
+
+  "accessories": [
+    {
+      "accessory": "fnip6x2ad-output",
+      "name" : "Kitchen Spotlights",
+      "ipaddress": "192.168.1.150",
+      "channel": 1
+    },
+    {
+      "accessory": "fnip6x2ad-output",
+      "name" : "Livingroom Spotlights",
+      "ipaddress": "192.168.1.150",
+      "channel": 2
+    },
+    {
+      "accessory": "fnip6x2ad-output",
+      "name" : "Downstairs Spotlights",
+      "ipaddress": "192.168.1.150",
+      "channel": 3
+    },
+    {
+      "accessory": "fnip6x2ad-output",
+      "name" : "TV Room Spotlights",
+      "ipaddress": "192.168.1.150",
+      "channel": 4
+    },
+    {
+      "accessory": "fnip6x2ad-output",
+      "name" : "Livingroom Light",
+      "ipaddress": "192.168.1.150",
+      "channel": 5
+    },
+    {
+      "accessory": "fnip6x2ad-output",
+      "name" : "Kitchen Light",
+      "ipaddress": "192.168.1.150",
+      "channel": 6
+    },
+    {
+      "accessory": "fnip8x10a-output",
+      "name" : "Main Bathroom Lights",
+      "ipaddress": "192.168.1.151",
+      "channel": 1
+    },
+    {
+      "accessory": "fnip8x10a-output",
+      "name" : "Dressing Room Lights",
+      "ipaddress": "192.168.1.151",
+      "channel": 2
+    },
+    {
+      "accessory": "fnip8x10a-output",
+      "name" : "Sauna Lights",
+      "ipaddress": "192.168.1.151",
+      "channel": 3
+    },
+    {
+      "accessory": "fnip8x10a-output",
+      "name" : "Fireplace Room Lights",
+      "ipaddress": "192.168.1.151",
+      "channel": 4
+    },
+    {
+      "accessory": "fnip8x10a-output",
+      "name" : "Outside Wall Lights",
+      "ipaddress": "192.168.1.151",
+      "channel": 5
+    },
+    {
+      "accessory": "fnip8x10a-output",
+      "name" : "Outside Terraces Lights",
+      "ipaddress": "192.168.1.151",
+      "channel": 6
+    },
+    {
+      "accessory": "fnip8x10a-output",
+      "name" : "Outside Garden Lights",
+      "ipaddress": "192.168.1.151",
+      "channel": 7
+    },
+    {
+      "accessory": "fnip8x10a-output",
+      "name" : "Outside Pool Lights",
+      "ipaddress": "192.168.1.151",
+      "channel": 8
+    }
+  ]
+}

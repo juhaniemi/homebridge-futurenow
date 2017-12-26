@@ -1,0 +1,24 @@
+{
+  "name": "homebridge-futurenow",
+  "version": "0.0.1",
+  "description": "P5 FutureNow Accessory plugins for homebridge: https://github.com/nfarina/homebridge",
+  "license": "ISC",
+  "keywords": [
+    "homebridge-plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/juhaniemi/homebridge-futurenow.git"
+  },
+  "bugs": {
+    "url": "http://github.com/juhaniemi/homebridge-futurenow/issues"
+  },
+  "engines": {
+    "node": ">=0.12.0",
+    "homebridge": ">=0.2.0"
+  },
+  "dependencies": {
+    "axios": ">=0.17",
+    "xml2js": ">=0.4"
+  }
+}
