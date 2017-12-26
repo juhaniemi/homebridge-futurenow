@@ -108,7 +108,8 @@ FNIPRelay.prototype.getPowerState = function(callback) {
   axios.get(url)
   .then(function (response) {
     parseString(response.data, function(err, result) {
-      var find = 'result.response.led' + self.config.channel-1;
+      var channel = self.config.channel-1;
+      var find = 'result.response.led' + channel;
       var state = parseInt(eval(find)) == 1 ? true : false;
       self.powerState = state;
       self.log.info('State is ' + self.powerState);
