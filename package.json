@@ -1,6 +1,6 @@
 {
   "name": "homebridge-futurenow",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "P5 FutureNow Accessory plugins for homebridge: https://github.com/nfarina/homebridge",
   "license": "ISC",
   "keywords": [
