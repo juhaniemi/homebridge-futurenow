@@ -73,7 +73,7 @@ FNIPDimmer.prototype.setPowerState = function(on, callback) {
     });
     self.log.debug('Setting state to ' + on);
     self.powerState = on;
-    callback(null);
+    callback();
   }
 }
 
@@ -93,7 +93,7 @@ FNIPDimmer.prototype.setBrightness = function(brightness, callback, context) {
   });
   self.brightness = brightness;
   self.log.debug('Setting brightness to ' + brightness);
-  callback(null);
+  callback();
 }
 
 FNIPDimmer.prototype.getServices = function() {
@@ -146,7 +146,7 @@ FNIPRelay.prototype.setPowerState = function(on, callback) {
     });
     self.log.debug('Setting state to ' + on);
     self.powerState = on;
-    callback(null);
+    callback();
   }
 }
 
