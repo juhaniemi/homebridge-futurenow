@@ -1,4 +1,4 @@
-var axios = require('axios');
+var request = require('request');
 var net = require('net');
 var xml2js = require('xml2js');
 var Service, Characteristic;
@@ -30,18 +30,14 @@ FNIPDimmer.prototype.getPowerState = function(callback) {
   var self = this;
   var parseString = require('xml2js').parseString;
   var url = 'http://' + self.config.ipaddress + '/status.xml';
-  axios.get(url, {'timeout': 1000})
-  .then(function (response) {
-    parseString(response.data, function(err, result) {
+  request.get(url, function (error, response, body) {
+    parseString(body, function(err, result) {
       var find = 'result.response.level' + self.config.channel;
       var brightness = parseInt(eval(find));
       self.powerState = brightness > 0 ? true : false;
       self.log.debug('State is ' + self.powerState);
       callback(null, self.powerState);
-    })
-  })
-  .catch(function (error) {
-    self.log.error(error);
+    });
   });
 }
 
@@ -49,17 +45,13 @@ FNIPDimmer.prototype.getBrightness = function(callback) {
   var self = this;
   var parseString = require('xml2js').parseString;
   var url = 'http://' + self.config.ipaddress + '/status.xml';
-  axios.get(url, {'timeout': 1000})
-  .then(function (response) {
-    parseString(response.data, function(err, result) {
+  request.get(url, function (error, response, body) {
+    parseString(body, function(err, result) {
       var find = 'result.response.level' + self.config.channel;
       self.brightness = parseInt(eval(find));
       self.log.debug('Brightness is at ' + self.brightness);
       callback(null, self.brightness);
-    })
-  })
-  .catch(function (error) {
-    self.log.error(error);
+    });
   });
 }
 
@@ -124,19 +116,15 @@ FNIPRelay.prototype.getPowerState = function(callback) {
   var self = this;
   var parseString = require('xml2js').parseString;
   var url = 'http://' + self.config.ipaddress + '/status.xml';
-  axios.get(url, {'timeout': 1000})
-  .then(function (response) {
-    parseString(response.data, function(err, result) {
-      var channel = self.config.channel-1;
+  var channel = self.config.channel-1;
+  request.get(url, function (error, response, body) {
+    parseString(body, function(err, result) {
       var find = 'result.response.led' + channel;
       var state = parseInt(eval(find)) == 1 ? true : false;
       self.powerState = state;
       self.log.debug('State is ' + self.powerState);
       callback(null, self.powerState);
-    })
-  })
-  .catch(function (error) {
-    self.log.error(error);
+    });
   });
 }
 
