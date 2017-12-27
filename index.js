@@ -14,6 +14,8 @@ function FNIPDimmer(log, config) {
   this.log = log;
   this.config = config;
   this.name = config["name"];
+  this.brightness = 0;
+  this.powerState = false;
 
   this.lightService = new Service.Lightbulb(this.name);
   this.lightService
@@ -57,22 +59,29 @@ FNIPDimmer.prototype.getBrightness = function(callback) {
 
 FNIPDimmer.prototype.setPowerState = function(on, callback) {
   var self = this;
-  const action = on ? 'ON' : 'OFF';
-  var client = new net.Socket();
-  client.connect(self.config.port, self.config.ipaddress, function() {
-    client.setTimeout(1000);
-    client.write('FN,' + action + ',' + self.config.channel + "\r\n");
-  });
-  client.on('data', function(data) {
-    client.destroy(); // kill client after server's response
-  });
-  client.on('error', function (err) {
-    client.destroy();
-    self.log.error(err);
-  });
-  self.log.debug('Setting state to ' + on);
-  self.powerState = on;
-  callback();
+  const action = on ? 'LEV,' + self.config.channel + ',' + self.brightness : 'OFF,' + self.config.channel;
+  if (!on || (on && !self.powerState)) {
+    self.log.debug('Setting state to ' + on);
+    var client = new net.Socket();
+    client.connect(self.config.port, self.config.ipaddress, function() {
+      client.setTimeout(1000);
+      client.write('FN,' + action + "\r\n");
+    });
+    client.on('data', function(data) {
+      client.destroy(); // kill client after server's response
+    });
+    client.on('close', function() {
+      self.powerState = on;
+      callback();
+    });
+    client.on('error', function (err) {
+      client.destroy();
+      self.log.error(err);
+    });
+  }
+  else {
+    callback();
+  }
 }
 
 FNIPDimmer.prototype.setBrightness = function(brightness, callback, context) {
@@ -90,6 +99,7 @@ FNIPDimmer.prototype.setBrightness = function(brightness, callback, context) {
     self.log.error(err);
   });
   self.brightness = brightness;
+  self.log.debug('Setting brightness to ' + brightness);
   callback();
 }
 
@@ -128,21 +138,28 @@ FNIPRelay.prototype.getPowerState = function(callback) {
 FNIPRelay.prototype.setPowerState = function(on, callback) {
   var self = this;
   const action = on ? 'ON' : 'OFF';
-  var client = new net.Socket();
-  client.connect(self.config.port, self.config.ipaddress, function() {
-    client.setTimeout(1000);
-    client.write('FN,' + action + ',' + self.config.channel + "\r\n");
-  });
-  client.on('data', function(data) {
-    client.destroy(); // kill client after server's response
-  });
-  client.on('error', function (err) {
-    client.destroy();
-    self.log.error(err);
-  });
-  self.log.debug('Setting state to ' + on);
-  self.powerState = on;
-  callback();
+  if (action == 'OFF' || (action == 'ON' && !self.powerState)) {
+    self.log.debug('Setting state to ' + on);
+    var client = new net.Socket();
+    client.connect(self.config.port, self.config.ipaddress, function() {
+      client.setTimeout(1000);
+      client.write('FN,' + action + ',' + self.config.channel + "\r\n");
+    });
+    client.on('data', function(data) {
+      client.destroy(); // kill client after server's response
+    });
+    client.on('close', function() {
+      self.powerState = on;
+      callback();
+    });
+    client.on('error', function (err) {
+      client.destroy();
+      self.log.error(err);
+    });
+  }
+  else {
+    callback();
+  }
 }
 
 FNIPRelay.prototype.getServices = function() {
