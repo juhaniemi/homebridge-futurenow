@@ -21,24 +21,45 @@ Homebridge support for P5 FutureNow units as light accessories
 
   "description": "Example config",
 
-  "accessories": [
+  "platforms": [
     {
-      "accessory": "fnip6x2ad-output",
-      "name" : "Kitchen Spotlights",
+      "platform": "FutureNow",
+      "device_type": "fnip6x2ad",
       "ipaddress": "192.168.1.150",
       "port": 7078,
-      "channel": 1
+      "http_user": "admin",
+      "http_pass": "futurenow",
+      "output_channels": [
+        {
+          "name": "Kitchen Spotlights",
+          "dimmable": 1,
+          "channel": 1
+        },
+        {
+          "name": "Livingroom Spotlights",
+          "dimmable": 1,
+          "channel": 2
+        }
+      ]
     },
     {
-      "accessory": "fnip8x10a-output",
-      "name" : "Main Bathroom Lights",
+      "platform": "FutureNow",
+      "device_type": "fnip8x10a",
       "ipaddress": "192.168.1.151",
       "port": 7078,
-      "channel": 1
-    },
-  ],
-
-  "platforms": [
+      "http_user": "admin",
+      "http_pass": "futurenow",
+      "output_channels": [
+        {
+          "name": "Bathroom lights",
+          "channel": 1
+        },
+        {
+          "name": "Sauna lights",
+          "channel": 2
+        }
+      ]
+    }
   ]
 }
 ```
