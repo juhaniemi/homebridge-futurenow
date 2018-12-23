@@ -1,4 +1,4 @@
-# P5 FutureNow plugins for homebridge
+# P5 FutureNow plugins for homebridge - Control P5 units with HomeKit
 
 Homebridge support for P5 FutureNow units as light accessories
 
